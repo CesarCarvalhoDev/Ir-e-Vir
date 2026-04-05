@@ -7,16 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Vehicle extends Model
 {
     protected $fillable = [
-
+        'plate',
+        'type',
+        'hasRegistration',
+        'availableBalance'
     ];
 
-    protected $hidden = [
-
-    ];
-
-    protected function casts() : array{
-        return [
-
-        ];
+    public function stays()
+    {
+        return $this->hasMany(Stay::class, 'vehicleId');
     }
 }
