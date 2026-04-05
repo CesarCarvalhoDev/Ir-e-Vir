@@ -8,15 +8,15 @@ use App\Models\Stay;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class EstacionamentoService
+class ParkingService
 {
-    public function registrarEntrada(string $placa, int $cameraId)
+    public function registerEntrance(string $plate, int $cameraId)
     {
-        return DB::transaction(function () use ($placa, $cameraId) {
+        return DB::transaction(function () use ($plate, $cameraId) {
 
             // Buscar ou criar veículo
             $vehicle = Vehicle::firstOrCreate(
-                ['plate' => $placa],
+                ['plate' => $plate],
                 [
                     'type' => 'CARRO',
                     'hasRegistration' => false,
@@ -49,11 +49,11 @@ class EstacionamentoService
         });
     }
 
-    public function registrarSaida(string $placa)
+    public function registerExit(string $plate)
     {
-        return DB::transaction(function () use ($placa) {
+        return DB::transaction(function () use ($plate) {
 
-            $vehicle = Vehicle::where('plate', $placa)->first();
+            $vehicle = Vehicle::where('plate', $plate)->first();
 
             if (!$vehicle) {
                 throw new \DomainException('Veículo não encontrado');
@@ -83,9 +83,9 @@ class EstacionamentoService
         });
     }
 
-    public function listarPorPlaca(string $placa)
+    public function listByPlate(string $plate)
     {
-        $vehicle = Vehicle::where('plate', $placa)->first();
+        $vehicle = Vehicle::where('plate', $plate)->first();
 
         if (!$vehicle) {
             return [];

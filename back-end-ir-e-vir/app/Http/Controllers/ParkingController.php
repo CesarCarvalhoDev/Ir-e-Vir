@@ -3,24 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\EstacionamentoService;
+use App\Services\ParkingService;
 
-class EstacionamentoController extends Controller
+class ParkingController extends Controller
 {
     public function __construct(
-        protected EstacionamentoService $service
+        protected ParkingService $service
     ) {}
 
     public function entrada(Request $request)
     {
         try {
             $request->validate([
-                'placa' => 'required|string',
+                'plate' => 'required|string',
                 'cameraId' => 'required|integer|exists:cameras,id'
             ]);
 
-            $result = $this->service->registrarEntrada(
-                $request->placa,
+            $result = $this->service->registerEntrance(
+                $request->plate,
                 $request->cameraId
             );
 
@@ -35,10 +35,10 @@ class EstacionamentoController extends Controller
     {
         try {
             $request->validate([
-                'placa' => 'required|string'
+                'plate' => 'required|string'
             ]);
 
-            $result = $this->service->registrarSaida($request->placa);
+            $result = $this->service->registerExit($request->plate);
 
             return response()->json($result);
 
@@ -47,10 +47,10 @@ class EstacionamentoController extends Controller
         }
     }
 
-    public function listar($placa)
+    public function listar($plate)
     {
         return response()->json(
-            $this->service->listarPorPlaca($placa)
+            $this->service->listByPlate($plate)
         );
     }
 }
