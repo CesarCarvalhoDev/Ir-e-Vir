@@ -7,17 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Stay extends Model
 {
     protected $fillable = [
-
+        'entry',
+        'exit',
+        'totalTime',
+        'status',
+        'vehicleId',
+        'zoneId'
     ];
 
-    protected $hidden = [
-
+    protected $casts = [
+        'entry' => 'datetime',
+        'exit' => 'datetime',
     ];
 
-    protected function casts() : array
+    public function vehicle()
     {
-        return [
-
-        ];
+        return $this->belongsTo(Vehicle::class, 'vehicleId');
     }
 }
