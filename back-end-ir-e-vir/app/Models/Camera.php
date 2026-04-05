@@ -7,16 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Camera extends Model
 {
     protected $fillable = [
-
+        'location',
+        'zoneId'
     ];
 
-    protected $hidden = [
-
-    ];
-
-    protected function casts() : array{
-        return [
-
-        ];
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class, 'zoneId');
     }
 }
