@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cameras', function (Blueprint $table) {
             $table->id();
             $table->string('location');
-            $table->foreignId('zoneId')->references('id')->on('zones');
+            $table->foreignId('zone_id')->references('id')->on('zones');
             $table->timestamps();
         });
     }

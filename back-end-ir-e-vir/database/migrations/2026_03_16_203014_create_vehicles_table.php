@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('plate');
             $table->string('type');
-            $table->boolean('hasRegistration');
-            $table->decimal('availableBalance');
+            $table->boolean('has_registration');
+            $table->decimal('available_balance');
             $table->timestamps();
         });
     }
