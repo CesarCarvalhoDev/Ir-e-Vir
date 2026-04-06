@@ -9,12 +9,19 @@ class CalculateTariffValue
 {
     public function execute(Stay $stay)
     {
-        $totalTime = $stay->totalTime;
+        $tariff = Tariff::where('zone_id', $stay->zone_id)
+            ->where('start_date', '<=', $stay->entry)
+            ->where('end_date', '>=', $stay->entry)
+            ->where('active', true)
+            ->first();
 
-        $tariff = Tariff::where('zoneId', $stay->zoneId)->where('startDate', '<=', $stay->entry)->where('endDate', '>=', $stay->entry)->where('active', true)->first();
-        $hourlyRate = $tariff->hourlyRate;
+        if (!$tariff) {
+            throw new \Exception('Tarifa não encontrada');
+        }
 
-        $totalValue = ($totalTime / 60) * $hourlyRate;
+        $totalTime = $stay->total_time;
+
+        $totalValue = round(($totalTime / 60) * $tariff->hourly_rate, 2);
 
         return $totalValue;
     }

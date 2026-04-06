@@ -6,8 +6,6 @@ use App\Models\Charge;
 use App\Models\Stay;
 use Illuminate\Support\Carbon;
 
-use function Symfony\Component\Clock\now;
-
 class GenerateChargeService
 {
     public function execute(Stay $stay, float $totalValue)

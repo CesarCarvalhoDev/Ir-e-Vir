@@ -16,7 +16,11 @@ class Stay extends Model
 
     protected function casts(): array
     {
-        return [];
+        return [
+            'entry' => 'datetime',
+            'exit' => 'datetime',
+            
+        ];
     }
 
     public function charges()
