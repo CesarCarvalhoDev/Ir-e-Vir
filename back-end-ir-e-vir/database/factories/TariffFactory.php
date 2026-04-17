@@ -17,7 +17,6 @@ class TariffFactory extends Factory
             'start_date' => $start,
             'end_date' => $end,
             'active' => true,
-            'zone_id' => Zone::factory(),
         ];
     }
 }

@@ -10,16 +10,30 @@ class Vehicle extends Model
     use HasFactory;
 
     protected $fillable = [
-
+        'plate',
+        'user_id',
     ];
 
-    protected $hidden = [
+    protected $hidden = [];
 
-    ];
+    protected function casts(): array
+    {
+        return [];
+    }
 
-    protected function casts() : array{
-        return [
+    /**
+     * Get the user that owns the vehicle.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-        ];
+    /**
+     * Get the stays for the vehicle.
+     */
+    public function stays()
+    {
+        return $this->hasMany(Stay::class);
     }
 }

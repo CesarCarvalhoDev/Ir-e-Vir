@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Charges\ChargeResource;
+use App\Models\Charge;
 use App\Models\Stay;
 use App\Services\Charge\GenerateChargeService;
 use App\Services\Charge\GetAllChargesService;
@@ -18,7 +19,17 @@ class ChargeController extends Controller
      */
     public function index(GetAllChargesService $service)
     {
-        return $service->execute()->toResourceCollection(ChargeResource::class);
+        // Get only charges for vehicles owned by the authenticated user
+        $user = auth()->user();
+        $vehicleIds = $user->vehicles()->pluck('id');
+        
+        $charges = \App\Models\Charge::query()
+            ->whereHas('stay', function ($query) use ($vehicleIds) {
+                $query->whereIn('vehicle_id', $vehicleIds);
+            })
+            ->get();
+
+        return ChargeResource::collection($charges);
     }
 
     /**
@@ -61,6 +72,20 @@ class ChargeController extends Controller
 
     public function showByPlate(string $plate, GetChargeByPlate $service)
     {
-        return new ChargeResource($service->execute($plate));
+        // Get only charges for vehicles owned by the authenticated user
+        $user = auth()->user();
+        
+        $charge = \App\Models\Charge::query()
+            ->whereHas('stay.vehicle', function ($query) use ($plate, $user) {
+                $query->where('plate', $plate)
+                    ->where('user_id', $user->id);
+            })
+            ->first();
+
+        if (!$charge) {
+            return response()->json(['message' => 'Charge not found'], 404);
+        }
+
+        return new ChargeResource($charge);
     }
 }

@@ -27,8 +27,6 @@ class ChargeFactory extends Factory
             ]),
 
             'due_date' => $this->faker->dateTimeBetween('now', '+7 days'),
-
-            'stay_id' => \App\Models\Stay::factory(),
         ];
     }
 }

@@ -2,38 +2,48 @@
 
 namespace Database\Factories;
 
-use App\Models\Model;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Testing\Fakes\Fake;
-use Nette\Utils\Random;
+use App\Models\Tariff;
 
-/**
- * @extends Factory<Model>
- */
 class StayFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $entry = $this->faker->dateTime();
-        $exit = (clone $entry)->modify('+' . rand(1, 120) . ' minutes');
-
-        $totalTime = (int) (($exit->getTimestamp() - $entry->getTimestamp()) / 60);
-
         return [
-            'entry' => $entry,
-            'exit' => $exit,
-            'total_time' => $totalTime,
+            'entry' => function (array $attributes) {
+                $tariff = Tariff::where('zone_id', $attributes['zone_id'])->inRandomOrder()->first();
+
+                return $this->faker->dateTimeBetween(
+                    $tariff->start_date,
+                    $tariff->end_date
+                );
+            },
+
+            'exit' => function (array $attributes) {
+                $tariff = Tariff::where('zone_id', $attributes['zone_id'])->inRandomOrder()->first();
+
+                $entry = $attributes['entry'];
+
+                $exit = (clone $entry)->modify('+' . rand(1, 120) . ' minutes');
+
+                if ($exit > $tariff->end_date) {
+                    $exit = (clone $tariff->end_date);
+                }
+
+                return $exit;
+            },
+
+            'total_time' => function (array $attributes) {
+                return (int)(($attributes['exit']->getTimestamp() - $attributes['entry']->getTimestamp()) / 60);
+            },
+
             'status' => 'ACTIVE',
-            'vehicle_id' => \App\Models\Vehicle::factory(),
-            'zone_id' => \App\Models\Zone::inRandomOrder()->first()?->id?? \App\Models\Zone::factory(),
             'created_at' => now(),
             'updated_at' => now(),
         ];
     }
 }
+
+
+
+
