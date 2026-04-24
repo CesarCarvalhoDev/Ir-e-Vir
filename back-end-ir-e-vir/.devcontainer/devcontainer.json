@@ -1,15 +1,25 @@
 {
-  "name": "Laravel PHP 8.2",
+  "name": "Laravel PHP 8.2 + MySQL",
   "image": "mcr.microsoft.com/devcontainers/php:0-8.2",
 
   "features": {
     "ghcr.io/devcontainers/features/composer:1": {},
-    "ghcr.io/devcontainers/features/node:1": {}
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/mysql:1": {
+      "version": "8.0",
+      "database": "ir_e_vir",
+      "user": "root",
+      "password": "root"
+    },
+    "ghcr.io/devcontainers/features/php:1": {
+      "version": "8.2",
+      "extensions": ["pdo_mysql"]
+    }
   },
 
   "forwardPorts": [8000, 3306],
 
-  "postCreateCommand": "sudo apt update && sudo apt install -y php-mysql && composer install && cp .env.example .env && php artisan key:generate",
+  "postCreateCommand": "composer install && cp .env.example .env && php artisan key:generate",
 
   "customizations": {
     "vscode": {
