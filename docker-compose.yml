@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    image: php:8.3-cli
+    container_name: laravel_app
+    working_dir: /var/www
+    volumes:
+      - ..:/var/www
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    command: >
+      bash -c "apt update &&
+               apt install -y git unzip curl libzip-dev zip &&
+               docker-php-ext-install pdo pdo_mysql &&
+               curl -sS https://getcomposer.org/installer | php &&
+               mv composer.phar /usr/local/bin/composer &&
+               php artisan serve --host=0.0.0.0 --port=8000"
+
+  mysql:
+    image: mysql:8.0
+    container_name: laravel_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ir_e_vir
+      MYSQL_USER: iruser
+      MYSQL_PASSWORD: irpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
