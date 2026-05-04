@@ -9,17 +9,17 @@ class Vehicle extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+    protected $fillable = [];
 
-    ];
+    protected $hidden = [];
 
-    protected $hidden = [
+    protected function casts(): array
+    {
+        return [];
+    }
 
-    ];
-
-    protected function casts() : array{
-        return [
-
-        ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 }

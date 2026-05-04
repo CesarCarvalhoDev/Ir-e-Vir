@@ -1,6 +1,6 @@
 {
-  "name": "Laravel PHP 8.2 + MySQL",
-  "image": "mcr.microsoft.com/devcontainers/php:0-8.2",
+  "name": "Laravel PHP 8.3 + MySQL",
+  "image": "mcr.microsoft.com/devcontainers/php:0-8.3",
 
   "features": {
     "ghcr.io/devcontainers/features/composer:1": {},
@@ -12,8 +12,12 @@
       "password": "root"
     },
     "ghcr.io/devcontainers/features/php:1": {
-      "version": "8.2",
-      "extensions": ["pdo_mysql"]
+      "version": "8.3",
+      "extensions": [
+        "pdo_mysql",
+        "mbstring",
+        "xml"
+      ]
     }
   },
 

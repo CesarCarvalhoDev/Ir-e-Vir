@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vehicles', function (Blueprint $table) {
+        Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->string('plate')->unique();
-            $table->string('type')->nullable();
-            $table->boolean('has_registration')->default(false);
+            $table->foreignId('user_id')->constrained()->unique();
+            $table->decimal('balance', 10, 2)->default(0);
+            $table->enum('status', ['active', 'blocked']);
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vehicles');
+        Schema::dropIfExists('wallets');
     }
 };

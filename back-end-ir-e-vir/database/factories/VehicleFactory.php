@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,7 +22,6 @@ class VehicleFactory extends Factory
             'plate' => strtoupper($this->faker->bothify('???-####')),
             'type' => $this->faker->randomElement(['CAR', 'MOTORCYCLE']),
             'has_registration' => $this->faker->boolean(),
-            'available_balance' => $this->faker->randomFloat(2, 0, 500),
             'created_at' => now(),
             'updated_at' => now(),
         ];
