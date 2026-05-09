@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('zones', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->int('maximumTime');
+            $table->integer('maximum_time');
             $table->timestamps();
         });
     }

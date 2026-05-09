@@ -14,35 +14,35 @@ class ParkingService
     {
         return DB::transaction(function () use ($plate, $cameraId) {
 
-            // Buscar ou criar veículo
+            // Find or create vehicle
             $vehicle = Vehicle::firstOrCreate(
                 ['plate' => $plate],
                 [
-                    'type' => 'CARRO',
+                    'type' => 'CAR',
                     'hasRegistration' => false,
                     'availableBalance' => 0
                 ]
             );
 
-            // Verificar se já existe permanência ativa
-            $existeAtiva = Stay::where('vehicleId', $vehicle->id)
-                ->where('status', 'ATIVA')
+            // Check if there is already an active stay
+            $hasActiveStay = Stay::where('vehicleId', $vehicle->id)
+                ->where('status', 'ACTIVE')
                 ->lockForUpdate()
                 ->exists();
 
-            if ($existeAtiva) {
+            if ($hasActiveStay) {
                 throw new \DomainException('Veículo já possui permanência ativa');
             }
 
             $camera = Camera::findOrFail($cameraId);
 
-            $agora = now();
+            $currentTime = now();
 
             return Stay::create([
-                'entry' => $agora,
-                'exit' => $agora,
+                'entry' => $currentTime,
+                'exit' => $currentTime,
                 'totalTime' => 0,
-                'status' => 'ATIVA',
+                'status' => 'ACTIVE',
                 'vehicleId' => $vehicle->id,
                 'zoneId' => $camera->zoneId
             ]);
@@ -60,7 +60,7 @@ class ParkingService
             }
 
             $stay = Stay::where('vehicleId', $vehicle->id)
-                ->where('status', 'ATIVA')
+                ->where('status', 'ACTIVE')
                 ->lockForUpdate()
                 ->first();
 
@@ -68,15 +68,15 @@ class ParkingService
                 throw new \DomainException('Nenhuma permanência ativa encontrada');
             }
 
-            $saida = now();
+            $exitTime = now();
 
-            $tempoTotal = Carbon::parse($stay->entry)
-                ->diffInMinutes($saida);
+            $totalTime = Carbon::parse($stay->entry)
+                ->diffInMinutes($exitTime);
 
             $stay->update([
-                'exit' => $saida,
-                'totalTime' => $tempoTotal,
-                'status' => 'FINALIZADA'
+                'exit' => $exitTime,
+                'totalTime' => $totalTime,
+                'status' => 'FINISHED'
             ]);
 
             return $stay;
@@ -94,12 +94,12 @@ class ParkingService
         return Stay::where('vehicleId', $vehicle->id)
             ->orderByDesc('entry')
             ->get()
-            ->map(function ($s) {
+            ->map(function ($stay) {
                 return [
-                    'entrada' => $s->entry,
-                    'saida' => $s->exit,
-                    'tempoTotal' => $s->totalTime,
-                    'status' => $s->status,
+                    'entry' => $stay->entry,
+                    'exit' => $stay->exit,
+                    'totalTime' => $stay->totalTime,
+                    'status' => $stay->status,
                 ];
             });
     }

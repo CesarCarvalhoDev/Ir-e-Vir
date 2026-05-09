@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('fines', function (Blueprint $table) {
             $table->id();
             $table->decimal('value');
-            $table->stirng('reason');
+            $table->string('reason');
             $table->string('status');
-            $table->foreignId('chargeId')->references('id')->on('charges');
+            $table->foreignId('charge_id')->references('id')->on('charges');
             $table->timestamps();
         });
     }

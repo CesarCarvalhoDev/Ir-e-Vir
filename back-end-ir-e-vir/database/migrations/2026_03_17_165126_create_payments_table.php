@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->decimal('paidValue');
-            $table->dateTime('paymentDate');
+            $table->decimal('paid_value');
+            $table->dateTime('payment_date');
             $table->string('status');
-            $table->foreignId('chargesId')->references('id')->on('charges');
+            $table->foreignId('charges_id')->references('id')->on('charges');
             $table->timestamps();
         });
     }

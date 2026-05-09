@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('message');
             $table->dateTime('sendingDate');
-            $table->foreignId('vehicleId')->references('id')->on('vehicles');
+            $table->foreignId('vehicle_id')->references('id')->on('vehicles');
             $table->timestamps();
         });
     }

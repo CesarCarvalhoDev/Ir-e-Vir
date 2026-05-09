@@ -11,7 +11,7 @@ class ParkingController extends Controller
         protected ParkingService $service
     ) {}
 
-    public function entrada(Request $request)
+    public function entry(Request $request)
     {
         try {
             $request->validate([
@@ -25,13 +25,14 @@ class ParkingController extends Controller
             );
 
             return response()->json($result, 201);
-
         } catch (\DomainException $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
         }
     }
 
-    public function saida(Request $request)
+    public function exit(Request $request)
     {
         try {
             $request->validate([
@@ -41,13 +42,14 @@ class ParkingController extends Controller
             $result = $this->service->registerExit($request->plate);
 
             return response()->json($result);
-
         } catch (\DomainException $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
         }
     }
 
-    public function listar($plate)
+    public function list($plate)
     {
         return response()->json(
             $this->service->listByPlate($plate)

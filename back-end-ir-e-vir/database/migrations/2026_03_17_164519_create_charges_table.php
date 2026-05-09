@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rates', function (Blueprint $table) {
+        Schema::create('charges', function (Blueprint $table) {
             $table->id();
-            $table->decimal('hourlyRate');
-            $table->dateTime('startDate');
-            $table->dateTime('endDate');
-            $table->boolean('active');
-            $table->foreignId('zoneId')->references('id')->on('zones');
+            $table->decimal('value');
+            $table->string('status');
+            $table->dateTime('due_date');
+            $table->foreignId('stay_id')->references('id')->on('stays');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rates');
+        Schema::dropIfExists('charges');
     }
 };

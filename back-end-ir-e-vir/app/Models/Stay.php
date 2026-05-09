@@ -2,26 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Stay extends Model
 {
-    protected $fillable = [
-        'entry',
-        'exit',
-        'totalTime',
-        'status',
-        'vehicleId',
-        'zoneId'
-    ];
+    use HasFactory;
 
-    protected $casts = [
-        'entry' => 'datetime',
-        'exit' => 'datetime',
-    ];
+    protected $fillable = [];
+
+    protected $hidden = [];
+
+    protected function casts(): array
+    {
+        return [
+            'entry' => 'datetime',
+            'exit' => 'datetime',
+            
+        ];
+    }
+
+    public function charges()
+    {
+        return $this->hasMany(Charge::class);
+    }
 
     public function vehicle()
     {
-        return $this->belongsTo(Vehicle::class, 'vehicleId');
+        return $this->belongsTo(Vehicle::class);
     }
 }

@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->dateTime('entry');
             $table->dateTime('exit');
-            $table->int('totalTime');
+            $table->integer('total_time');
             $table->string('status');
-            $table->foreignId('vehicleId')->references('id')->on('vehicles');
-            $table->foreignId('zoneId')->references('id')->on('zones');
+            $table->foreignId('vehicle_id')->references('id')->on('vehicles');
+            $table->foreignId('zone_id')->references('id')->on('zones');
             $table->timestamps();
         });
     }
