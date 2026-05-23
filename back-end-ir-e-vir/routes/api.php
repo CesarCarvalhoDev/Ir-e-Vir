@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\V1\StayController;
 use App\Http\Controllers\Api\V1\ChargeController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/stays', [StayController::class, 'index']);
 
 Route::post('/charges/{stay}', [ChargeController::class, 'store']);
 Route::get('/charges', [ChargeController::class, 'index']);
