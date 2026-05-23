@@ -1,0 +1,19 @@
+### BUSCAR TODAS PERMANECIAS
+GET https://super-tribble-g46xvj9v7wxg2767-8000.app.github.dev/api/stays
+### BUSCAR TODAS COBRANÇAS
+GET https://super-tribble-g46xvj9v7wxg2767-8000.app.github.dev/api/charges
+
+###
+
+POST https://super-tribble-g46xvj9v7wxg2767-8000.app.github.dev/api/charges/{plate}
+
+###
+
+POST https://super-tribble-g46xvj9v7wxg2767-8000.app.github.dev/api/charges/{stay}
+
+###
+
+POST https://super-tribble-g46xvj9v7wxg2767-8000.app.github.dev/api/user/{user}/vehicles
+
+###
+
