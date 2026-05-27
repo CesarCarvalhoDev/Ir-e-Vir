@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Stay;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreChargeRequest extends FormRequest
+class StoreEntryStayRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,9 @@ class StoreChargeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            
+            'entry' => ['required', 'date'],
+            'vehicle_id' => ['required', 'integer', 'exists:vehicles,id'],
+            'zone_id' => ['required', 'integer', 'exists:zones,id'],
         ];
     }
 }

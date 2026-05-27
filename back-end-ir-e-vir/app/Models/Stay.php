@@ -10,7 +10,14 @@ class Stay extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
+    protected $fillable = [
+        'entry',
+        'exit',
+        'vehicle_id',
+        'zone_id',
+        'total_time',
+        'status',
+    ];
 
     protected $hidden = [];
 
@@ -19,7 +26,7 @@ class Stay extends Model
         return [
             'entry' => 'datetime',
             'exit' => 'datetime',
-            
+
         ];
     }
 

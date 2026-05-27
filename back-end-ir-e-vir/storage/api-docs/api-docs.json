@@ -1,0 +1,319 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Ir e Vir API",
+        "description": "Documentação da API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/charges": {
+            "get": {
+                "tags": [
+                    "Charges"
+                ],
+                "summary": "Lista todas as cobranças",
+                "operationId": "8eba8c712bed25e6cdfc63fced78c360",
+                "responses": {
+                    "200": {
+                        "description": "Lista de cobranças retornada com sucesso"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Charges"
+                ],
+                "summary": "Gerar uma nova cobrança",
+                "operationId": "e372faea8d4bdb95cf11ba618a490466",
+                "responses": {
+                    "201": {
+                        "description": "Cobrança gerada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao gerar cobrança"
+                    }
+                }
+            }
+        },
+        "/api/charges/{plate}": {
+            "get": {
+                "tags": [
+                    "Charges"
+                ],
+                "summary": "Buscar cobrança pela placa",
+                "operationId": "996caf32acf0cec410a32e2c6c961970",
+                "parameters": [
+                    {
+                        "name": "plate",
+                        "in": "path",
+                        "description": "Placa do veículo",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cobrança encontrada"
+                    },
+                    "404": {
+                        "description": "Cobrança não encontrada"
+                    }
+                }
+            }
+        },
+        "/api/stays": {
+            "get": {
+                "tags": [
+                    "Stays"
+                ],
+                "summary": "Lista todas as estadias",
+                "operationId": "b99e34c3c41660c137a43528e276047a",
+                "responses": {
+                    "200": {
+                        "description": "Lista de estadias retornada com sucesso"
+                    }
+                }
+            }
+        },
+        "/api/stays/entry": {
+            "post": {
+                "tags": [
+                    "Stays"
+                ],
+                "summary": "Registrar entrada de veículo",
+                "operationId": "f43a55635756fc10bd1eb6d3efad8ba2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "plate"
+                                ],
+                                "properties": {
+                                    "plate": {
+                                        "type": "string",
+                                        "example": "ABC1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Entrada registrada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao registrar entrada"
+                    }
+                }
+            }
+        },
+        "/api/stays/exit": {
+            "post": {
+                "tags": [
+                    "Stays"
+                ],
+                "summary": "Registrar saída de veículo",
+                "operationId": "464130083e17ac01edb2f81081118461",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "plate"
+                                ],
+                                "properties": {
+                                    "plate": {
+                                        "type": "string",
+                                        "example": "ABC1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Saída registrada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao registrar saída"
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Lista usuários",
+                "operationId": "60e6ec72fbb2dd5f8977b3623a5bd2f6",
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuários retornada com sucesso"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Criar usuário",
+                "operationId": "23b7ba485f2f33276fee0b673f729a51",
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado com sucesso"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Buscar usuário por ID",
+                "operationId": "1b0033ebfd92ac053df80ca3523c618d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário encontrado"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Atualizar usuário",
+                "operationId": "30d7b826acc88364c63d5c76e52c5ca8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário atualizado com sucesso"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Remover usuário",
+                "operationId": "3fd8e1f699bedcf7329d66aafcafa323",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário removido com sucesso"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/vehicles": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Vincular veículo ao usuário",
+                "operationId": "2e65aa69bce48ac3390b752b4225a277",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "plate",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "plate": {
+                                        "type": "string",
+                                        "example": "ABC1234"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "car"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Veículo vinculado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao vincular veículo"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Charges",
+            "description": "Endpoints relacionados às cobranças"
+        },
+        {
+            "name": "Stays",
+            "description": "Endpoints relacionados às estadias"
+        },
+        {
+            "name": "Users",
+            "description": "Endpoints relacionados aos usuários"
+        }
+    ]
+}

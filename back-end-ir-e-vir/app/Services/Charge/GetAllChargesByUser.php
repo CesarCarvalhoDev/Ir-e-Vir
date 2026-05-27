@@ -3,8 +3,10 @@
 namespace App\Services\Charge;
 
 use App\Models\Charge;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
-class GetAllChargesByVehicle
+class GetAllChargesByUser
 {
     public function execute(User $user)
     {
