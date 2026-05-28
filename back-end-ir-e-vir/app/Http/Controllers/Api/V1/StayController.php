@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use OpenApi\Attributes as OA;
+
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\Stay\StoreEntryStayRequest;
 use App\Http\Requests\Stay\StoreExitStayRequest;
+
 use App\Services\Stay\GetAllStaysService;
 use App\Services\Stay\StoreEntryStayService;
 use App\Services\Stay\StoreExitStayService;
@@ -27,9 +30,13 @@ class StayController extends Controller
             )
         ]
     )]
-    public function index(GetAllStaysService $service)
-    {
-        return $service->execute();
+    public function index(
+        GetAllStaysService $service
+    ) {
+        return response()->json(
+            $service->execute(),
+            200
+        );
     }
 
     #[OA\Post(
@@ -66,11 +73,14 @@ class StayController extends Controller
     ) {
         try {
 
-            $data = $request->validated();
+            $stay = $service->execute(
+                $request->validated()
+            );
 
-            $stay = $service->execute($data);
-
-            return response()->json($stay, 201);
+            return response()->json(
+                $stay,
+                201
+            );
 
         } catch (\Exception $ex) {
 
@@ -115,11 +125,14 @@ class StayController extends Controller
     ) {
         try {
 
-            $data = $request->validated();
+            $response = $service->execute(
+                $request->validated()
+            );
 
-            $stay = $service->execute($data);
-
-            return response()->json($stay, 200);
+            return response()->json(
+                $response,
+                200
+            );
 
         } catch (\Exception $ex) {
 

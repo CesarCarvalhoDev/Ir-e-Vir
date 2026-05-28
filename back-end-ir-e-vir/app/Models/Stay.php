@@ -30,6 +30,10 @@ class Stay extends Model
         ];
     }
 
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_FINISHED = 'finished';
+    public const STATUS_IRREGULAR = 'irregular';
+
     public function charges()
     {
         return $this->hasMany(Charge::class);

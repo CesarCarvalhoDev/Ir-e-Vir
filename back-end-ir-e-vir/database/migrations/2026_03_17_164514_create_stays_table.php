@@ -19,6 +19,11 @@ return new class extends Migration
             $table->string('status');
             $table->foreignId('vehicle_id')->references('id')->on('vehicles');
             $table->foreignId('zone_id')->references('id')->on('zones');
+            $table->enum('status', [
+                'active',
+                'finished',
+                'irregular'
+            ])->default('active');
             $table->timestamps();
         });
     }
