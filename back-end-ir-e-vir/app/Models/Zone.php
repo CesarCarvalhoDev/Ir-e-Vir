@@ -10,7 +10,6 @@ class Zone extends Model
     use HasFactory;
 
     protected $fillable = [
-
     ];
 
     protected $hidden = [

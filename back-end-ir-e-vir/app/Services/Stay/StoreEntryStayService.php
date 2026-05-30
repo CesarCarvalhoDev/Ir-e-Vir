@@ -21,8 +21,7 @@ class StoreEntryStayService
         $stay = Stay::create([
             'entry' => $data['entry'],
             'vehicle_id' => $data['vehicle_id'],
-            'zone_id' => $data['zone_id'],
-            'status' => 'OPEN',
+            'zone_id' => $data['zone_id']
         ]);
 
         return $stay;

@@ -9,9 +9,12 @@ class Vehicle extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
-
     protected $hidden = [];
+
+    protected $fillable = [
+        'plate',
+        'type'
+    ];
 
     protected function casts(): array
     {

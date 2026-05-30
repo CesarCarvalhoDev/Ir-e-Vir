@@ -14,16 +14,15 @@ return new class extends Migration
         Schema::create('stays', function (Blueprint $table) {
             $table->id();
             $table->dateTime('entry');
-            $table->dateTime('exit');
-            $table->integer('total_time');
-            $table->string('status');
+            $table->dateTime('exit')->nullable();
+            $table->integer('total_time')->nullable();
             $table->foreignId('vehicle_id')->references('id')->on('vehicles');
             $table->foreignId('zone_id')->references('id')->on('zones');
             $table->enum('status', [
-                'active',
-                'finished',
-                'irregular'
-            ])->default('active');
+                'ACTIVE',
+                'FINISHED',
+                'IRREGULAR'
+            ])->default('ACTIVE');
             $table->timestamps();
         });
     }

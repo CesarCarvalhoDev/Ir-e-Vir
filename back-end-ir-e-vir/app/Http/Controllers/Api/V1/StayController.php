@@ -67,10 +67,7 @@ class StayController extends Controller
             )
         ]
     )]
-    public function storeEntry(
-        StoreEntryStayRequest $request,
-        StoreEntryStayService $service
-    ) {
+    public function storeEntry(StoreEntryStayRequest $request, StoreEntryStayService $service) {
         try {
 
             $stay = $service->execute(
