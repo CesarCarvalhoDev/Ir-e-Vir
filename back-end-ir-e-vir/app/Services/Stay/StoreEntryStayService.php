@@ -3,13 +3,16 @@
 namespace App\Services\Stay;
 
 use App\Models\Stay;
+use App\Models\Vehicle;
 use Exception;
 
 class StoreEntryStayService
 {
     public function execute(array $data)
     {
-        $stayOpen = Stay::where('vehicle_id', $data['vehicle_id'])
+        $currentVehicle = Vehicle::where('plate', $data['plate'])->first();
+
+        $stayOpen = Stay::where('vehicle_id', $currentVehicle->id)
             ->whereNull('exit')
             ->where('status', 'OPEN')
             ->first();
@@ -20,7 +23,7 @@ class StoreEntryStayService
 
         $stay = Stay::create([
             'entry' => $data['entry'],
-            'vehicle_id' => $data['vehicle_id'],
+            'vehicle_id' => $currentVehicle->id,
             'zone_id' => $data['zone_id']
         ]);
 

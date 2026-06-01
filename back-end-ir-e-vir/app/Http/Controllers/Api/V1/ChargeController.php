@@ -12,48 +12,14 @@ use App\Services\Charge\GetAllChargesService;
 use App\Services\Charge\GetChargeByPlate;
 use App\Services\Tariff\CalculateTariffValue;
 
-#[OA\Tag(
-    name: 'Charges',
-    description: 'Endpoints relacionados às cobranças'
-)]
 class ChargeController extends Controller
 {
-    #[OA\Get(
-        path: '/api/charges',
-        summary: 'Lista todas as cobranças',
-        tags: ['Charges'],
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Lista de cobranças retornada com sucesso'
-            )
-        ]
-    )]
     public function index(GetAllChargesService $service)
     {
         return $service->execute()->toResourceCollection(ChargeResource::class);
     }
 
-    #[OA\Post(
-        path: '/api/charges',
-        summary: 'Gerar uma nova cobrança',
-        tags: ['Charges'],
-        responses: [
-            new OA\Response(
-                response: 201,
-                description: 'Cobrança gerada com sucesso'
-            ),
-            new OA\Response(
-                response: 400,
-                description: 'Erro ao gerar cobrança'
-            )
-        ]
-    )]
-    public function store(
-        Stay $stay,
-        GenerateChargeService $generateChargeService,
-        CalculateTariffValue $calculateTariffValue
-    ) {
+    public function store(Stay $stay,GenerateChargeService $generateChargeService,CalculateTariffValue $calculateTariffValue) {
         try {
             $totalValue = $calculateTariffValue->execute($stay);
 
@@ -76,34 +42,7 @@ class ChargeController extends Controller
         }
     }
 
-    #[OA\Get(
-        path: '/api/charges/{plate}',
-        summary: 'Buscar cobrança pela placa',
-        tags: ['Charges'],
-        parameters: [
-            new OA\Parameter(
-                name: 'plate',
-                description: 'Placa do veículo',
-                in: 'path',
-                required: true,
-                schema: new OA\Schema(type: 'string')
-            )
-        ],
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Cobrança encontrada'
-            ),
-            new OA\Response(
-                response: 404,
-                description: 'Cobrança não encontrada'
-            )
-        ]
-    )]
-    public function showByPlate(
-        string $plate,
-        GetChargeByPlate $service
-    ) {
+    public function showByPlate(string $plate,GetChargeByPlate $service) {
         return new ChargeResource(
             $service->execute($plate)
         );

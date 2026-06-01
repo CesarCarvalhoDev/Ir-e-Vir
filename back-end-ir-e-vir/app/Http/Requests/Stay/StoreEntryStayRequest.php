@@ -24,7 +24,7 @@ class StoreEntryStayRequest extends FormRequest
     {
         return [
             'entry' => ['required', 'date'],
-            'vehicle_id' => ['required', 'integer', 'exists:vehicles,id'],
+            'plate' => ['required', 'string', 'exists:vehicles,plate'],
             'zone_id' => ['required', 'integer', 'exists:zones,id'],
         ];
     }
