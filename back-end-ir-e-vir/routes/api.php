@@ -13,9 +13,11 @@ Route::get('/vehicles', [VehicleController::class, 'index']);
 
 Route::get('/stays', [StayController::class, 'index']);
 Route::post('/stays/entry', [StayController::class, 'storeEntry']);
-Route::get('/stays/exit', [StayController::class, 'storeExit']);
+Route::post('/stays/exit', [StayController::class, 'storeExit']);
 Route::post('/charges/{stay}', [ChargeController::class, 'store']);
 Route::get('/charges', [ChargeController::class, 'index']);
 Route::get('/charges/{plate}', [ChargeController::class, 'showByPlate']);
+Route::post('/charges/{charge}/pay/{user}', [ChargeController::class, 'pay']);
 Route::post('/user/{user}/vehicles', [UserController::class, 'linkToVehicle']);
+Route::get('/user/{user}/stays', [UserController::class, 'showUserStays']);
 

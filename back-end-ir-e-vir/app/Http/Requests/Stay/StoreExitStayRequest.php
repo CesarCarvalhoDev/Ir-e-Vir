@@ -15,7 +15,7 @@ class StoreExitStayRequest extends FormRequest
     {
         return [
             'exit' => ['required', 'date'],
-            'vehicle_id' => ['required', 'integer', 'exists:vehicles,id'],
+            'plate' => ['required', 'string', 'exists:vehicles,plate'],
         ];
     }
 }

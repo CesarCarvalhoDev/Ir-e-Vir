@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\User\LinkVehicleToUser;
 use App\Http\Requests\User\LinkVehicleToUserRequest;
+use App\Services\User\GetStaysByUser;
 
 #[OA\Tag(
     name: 'Users',
@@ -18,7 +19,7 @@ class UserController extends Controller
 
     public function index()
     {
-        //
+
     }
 
     public function store(Request $request)
@@ -68,6 +69,16 @@ class UserController extends Controller
                 'erro' => $ex->getMessage()
             ], 400);
 
+        }
+    }
+
+    public function showUserStays(GetStaysByUser $getStaysByUser, User $user){
+        try {
+            $stays = $getStaysByUser->execute($user);
+
+            return response()->json($stays, 200);
+        } catch (\Exception $ex) {
+            return response()->json($ex->getMessage(), 400);
         }
     }
 }

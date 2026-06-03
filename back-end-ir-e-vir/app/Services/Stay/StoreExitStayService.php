@@ -8,33 +8,33 @@ use App\Models\Stay;
 use App\Models\User;
 use App\Models\Vehicle;
 
+use App\Services\Charge\GenerateChargeService;
+use App\Services\Charge\PayChargeWithWalletService;
 use App\Services\Fine\GenerateFineService;
-
-use App\Services\Wallet\DeductBalanceService;
-use App\Services\Wallet\ValidateBalanceService;
 
 class StoreExitStayService
 {
     public function __construct(
         private CalculateStayAmountService $calculateStayAmountService,
 
-        private ValidateBalanceService $validateBalanceService,
+        private GenerateChargeService $generateChargeService,
 
-        private DeductBalanceService $deductBalanceService,
+        private PayChargeWithWalletService $payChargeWithWalletService,
 
         private GenerateFineService $generateFineService
     ) {}
 
     public function execute(array $data)
     {
-        $vehicle = Vehicle::where(
-            'plate',
-            $data['plate']
-        )->firstOrFail();
+        $vehicle = Vehicle::where('plate', $data['plate'])->firstOrFail();
 
-        $user = User::findOrFail(
-            $vehicle->user_id
-        );
+        $user = $vehicle->users()->first();
+
+        if (!$user) {
+            throw new Exception(
+                'Veículo não está vinculado a nenhum usuário.'
+            );
+        }
 
         $wallet = $user->wallet;
 
@@ -44,15 +44,9 @@ class StoreExitStayService
             );
         }
 
-        $stay = Stay::where(
-            'vehicle_id',
-            $vehicle->id
-        )
-        ->where(
-            'status',
-            Stay::STATUS_ACTIVE
-        )
-        ->first();
+        $stay = Stay::where('vehicle_id', $vehicle->id)
+            ->where('status', Stay::STATUS_ACTIVE)
+            ->first();
 
         if (!$stay) {
             throw new Exception(
@@ -64,12 +58,30 @@ class StoreExitStayService
             ->calculateStayAmountService
             ->execute($stay);
 
-        $hasBalance = $this
-            ->validateBalanceService
-            ->execute($wallet, $amount);
+        $charge = $this->generateChargeService->execute(
+            $stay,
+            $amount
+        );
 
-        if (!$hasBalance) {
+        try {
+            $payment = $this->payChargeWithWalletService->execute(
+                $charge,
+                $wallet
+            );
 
+            $stay->update([
+                'status' => Stay::STATUS_FINISHED,
+                'exit_time' => now(),
+            ]);
+
+            return [
+                'message' => 'Saída registrada com sucesso.',
+                'amount_paid' => $amount,
+                'charge_id' => $charge->id,
+                'payment_id' => $payment->id,
+                'remaining_balance' => $wallet->fresh()->balance,
+            ];
+        } catch (Exception $ex) {
             $this->generateFineService->execute(
                 $user,
                 $stay,
@@ -85,21 +97,5 @@ class StoreExitStayService
                 'Saldo insuficiente. Multa gerada.'
             );
         }
-
-        $this->deductBalanceService
-            ->execute($wallet, $amount);
-
-        $stay->update([
-            'status' => Stay::STATUS_FINISHED,
-            'exit_time' => now(),
-        ]);
-
-        return [
-            'message' => 'Saída registrada com sucesso.',
-            'amount_paid' => $amount,
-            'remaining_balance' => $wallet
-                ->fresh()
-                ->balance,
-        ];
     }
 }

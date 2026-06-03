@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Charge extends Model
 {
@@ -21,15 +22,22 @@ class Charge extends Model
         'Stay_id'
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'due_date' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'value' => 'decimal:2',
+        'due_date' => 'datetime',
+    ];
 
-    public function stay()
+    public const STATUS_PENDING = 'PENDING';
+    public const STATUS_PAID = 'PAID';
+    public const STATUS_OVERDUE = 'OVERDUE';
+
+    public function stay(): BelongsTo
     {
         return $this->belongsTo(Stay::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'charges_id');
     }
 }
