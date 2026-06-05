@@ -14,7 +14,7 @@ class StoreEntryStayService
 
         $stayOpen = Stay::where('vehicle_id', $currentVehicle->id)
             ->whereNull('exit')
-            ->where('status', 'OPEN')
+            ->where('status', Stay::STATUS_ACTIVE)
             ->first();
 
         if ($stayOpen) {
@@ -24,7 +24,8 @@ class StoreEntryStayService
         $stay = Stay::create([
             'entry' => $data['entry'],
             'vehicle_id' => $currentVehicle->id,
-            'zone_id' => $data['zone_id']
+            'zone_id' => $data['zone_id'],
+            'status' => Stay::STATUS_ACTIVE,
         ]);
 
         return $stay;

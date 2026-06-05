@@ -9,7 +9,7 @@ class CalculateStayAmountService
 {
     public function execute(Stay $stay): float
     {
-        $entry = Carbon::parse($stay->entry_time);
+        $entry = Carbon::parse($stay->entry);
 
         $exit = now();
 

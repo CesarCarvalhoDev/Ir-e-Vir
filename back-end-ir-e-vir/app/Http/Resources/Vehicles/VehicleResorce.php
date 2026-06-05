@@ -20,8 +20,8 @@ class VehicleResorce extends JsonResource
             'plate' => $this->plate,
             'type' => $this->type,
 
-            'has_registration' => (bool) $this->hasRegistration,
-            'available_balance' => (float) $this->availableBalance,
+            'has_registration' => (bool) $this->has_registration,
+            'available_balance' => (float) ($this->available_balance ?? 0),
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

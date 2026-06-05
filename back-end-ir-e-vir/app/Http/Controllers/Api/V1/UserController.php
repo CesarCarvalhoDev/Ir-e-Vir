@@ -6,6 +6,7 @@ use OpenApi\Attributes as OA;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Users\UserResource;
 use App\Services\User\LinkVehicleToUser;
 use App\Http\Requests\User\LinkVehicleToUserRequest;
 use App\Services\User\GetStaysByUser;
@@ -19,7 +20,7 @@ class UserController extends Controller
 
     public function index()
     {
-
+        return UserResource::collection(User::with(['wallet', 'vehicles'])->get());
     }
 
     public function store(Request $request)

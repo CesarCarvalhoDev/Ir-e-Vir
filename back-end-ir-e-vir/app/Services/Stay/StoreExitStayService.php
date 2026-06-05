@@ -7,6 +7,7 @@ use Exception;
 use App\Models\Stay;
 use App\Models\User;
 use App\Models\Vehicle;
+use Carbon\Carbon;
 
 use App\Services\Charge\GenerateChargeService;
 use App\Services\Charge\PayChargeWithWalletService;
@@ -71,7 +72,8 @@ class StoreExitStayService
 
             $stay->update([
                 'status' => Stay::STATUS_FINISHED,
-                'exit_time' => now(),
+                'exit' => $data['exit'],
+                'total_time' => $stay->entry->diffInMinutes(Carbon::parse($data['exit'])),
             ]);
 
             return [
@@ -90,7 +92,8 @@ class StoreExitStayService
 
             $stay->update([
                 'status' => Stay::STATUS_IRREGULAR,
-                'exit_time' => now(),
+                'exit' => $data['exit'],
+                'total_time' => $stay->entry->diffInMinutes(Carbon::parse($data['exit'])),
             ]);
 
             throw new Exception(
