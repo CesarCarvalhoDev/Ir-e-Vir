@@ -77,7 +77,7 @@ class ChargeController extends Controller
 
             return response()->json([
                 'message' => 'Cobrança paga com sucesso.',
-                'charge' => new ChargeResource($charge->fresh()),
+                'charge' => new ChargeResource($charge->fresh()->load(['stay.vehicle', 'payments', 'user'])),
                 'payment' => [
                     'id' => $payment->id,
                     'paid_value' => $payment->paid_value,

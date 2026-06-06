@@ -13,7 +13,8 @@ class Vehicle extends Model
 
     protected $fillable = [
         'plate',
-        'type'
+        'type',
+        'has_registration',
     ];
 
     protected function casts(): array

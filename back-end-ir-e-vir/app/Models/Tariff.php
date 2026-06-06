@@ -10,6 +10,14 @@ class Tariff extends Model
     /** @use HasFactory<\Database\Factories\TariffFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'hourly_rate',
+        'start_date',
+        'end_date',
+        'active',
+        'zone_id',
+    ];
+
     public function casts()
     {
         return [
@@ -17,5 +25,10 @@ class Tariff extends Model
             'start_date' => 'datetime',
             'end_date' => 'datetime',
         ];
+    }
+
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class);
     }
 }

@@ -15,7 +15,8 @@ class Charge extends Model
         'value',
         'status',
         'due_date',
-        'stay_id'
+        'stay_id',
+        'user_id',
     ];
 
     protected $hidden = [
@@ -34,6 +35,11 @@ class Charge extends Model
     public function stay(): BelongsTo
     {
         return $this->belongsTo(Stay::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function payments(): HasMany

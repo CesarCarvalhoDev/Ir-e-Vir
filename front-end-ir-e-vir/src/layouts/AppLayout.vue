@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { CarFront, CircleDollarSign, FileWarning, House, LogOut, Menu, Route, UserCircle, X } from 'lucide-vue-next'
+import { AlertTriangle, CarFront, CircleDollarSign, FileWarning, House, LogOut, MapPin, Menu, Route, UserCircle, X } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { useUiStore } from '@/stores/ui'
 const ui = useUiStore()
@@ -11,11 +11,18 @@ const router = useRouter()
 const links = computed(() => auth.isAdmin ? [
   { to: '/admin', label: 'Admin geral', icon: House },
   { to: '/admin/permanencias', label: 'Permanências', icon: Route },
+  { to: '/admin/veiculos', label: 'Veículos', icon: CarFront },
+  { to: '/admin/zonas', label: 'Zonas', icon: MapPin },
   { to: '/admin/cobrancas', label: 'Cobranças', icon: CircleDollarSign },
+  { to: '/admin/multas', label: 'Multas', icon: AlertTriangle },
   { to: '/admin/usuarios', label: 'Usuários e veículos', icon: CarFront },
   { to: '/admin/limites-da-api', label: 'Limites da API', icon: FileWarning },
 ] : [
   { to: '/user', label: 'Minha home', icon: House },
+  { to: '/user/veiculos', label: 'Meus veículos', icon: CarFront },
+  { to: '/user/permanencias', label: 'Permanências', icon: Route },
+  { to: '/user/cobrancas', label: 'Cobranças', icon: CircleDollarSign },
+  { to: '/user/multas', label: 'Multas', icon: AlertTriangle },
   { to: '/user/limites-da-api', label: 'Limites da API', icon: FileWarning },
 ])
 async function logout() {

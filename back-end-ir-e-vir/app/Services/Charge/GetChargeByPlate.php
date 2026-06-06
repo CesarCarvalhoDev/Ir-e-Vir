@@ -8,7 +8,8 @@ class GetChargeByPlate
 {
     public function execute(string $plate)
     {
-        $charge = Charge::whereHas('stay.vehicle', function ($q) use ($plate) {
+        $charge = Charge::with(['stay.vehicle', 'payments', 'user'])
+            ->whereHas('stay.vehicle', function ($q) use ($plate) {
             $q->where('plate', $plate);
         })
             ->latest()

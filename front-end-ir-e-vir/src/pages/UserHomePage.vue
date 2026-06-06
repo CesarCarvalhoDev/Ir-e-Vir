@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { CarFront, CircleDollarSign, Clock3, Plus, Wallet } from 'lucide-vue-next'
+import { CarFront, CircleDollarSign, Clock3, FileWarning, Plus, Wallet } from 'lucide-vue-next'
 import { apiService } from '@/services/apiService'
 import { getApiError } from '@/api/http'
 import { useAuthStore } from '@/stores/auth'
@@ -16,10 +16,12 @@ const client = useQueryClient()
 const vehicles = useQuery({ queryKey: ['me', 'vehicles'], queryFn: apiService.getMyVehicles })
 const stays = useQuery({ queryKey: ['me', 'stays'], queryFn: apiService.getMyStays })
 const charges = useQuery({ queryKey: ['me', 'charges'], queryFn: apiService.getMyCharges })
+const fines = useQuery({ queryKey: ['me', 'fines'], queryFn: apiService.getMyFines })
 const form = reactive({ plate: '', type: 'CAR' })
 
 const activeStays = computed(() => stays.data.value?.filter((stay) => stay.status === 'ACTIVE') ?? [])
 const pendingCharges = computed(() => charges.data.value?.filter((charge) => charge.status === 'PENDING') ?? [])
+const activeFines = computed(() => fines.data.value?.filter((fine) => fine.status === 'active') ?? [])
 const shouldOnboard = computed(() => !vehicles.isLoading.value && !stays.isLoading.value && (!vehicles.data.value?.length || !stays.data.value?.length))
 
 const linkMutation = useMutation({
@@ -62,6 +64,7 @@ const payMutation = useMutation({
     <article class="metric"><CarFront /><span>Veículos vinculados</span><strong>{{ vehicles.data.value?.length ?? 0 }}</strong></article>
     <article class="metric"><Clock3 /><span>Permanências ativas</span><strong>{{ activeStays.length }}</strong></article>
     <article class="metric"><CircleDollarSign /><span>Cobranças pendentes</span><strong>{{ pendingCharges.length }}</strong></article>
+    <article class="metric"><FileWarning /><span>Multas ativas</span><strong>{{ activeFines.length }}</strong></article>
     <article class="metric"><Wallet /><span>Saldo da carteira</span><strong>{{ money(auth.user?.wallet?.balance ?? auth.user?.available_balance) }}</strong></article>
   </section>
 
@@ -100,6 +103,13 @@ const payMutation = useMutation({
           <button v-if="charge.status === 'PENDING'" class="danger compact-button" @click="payMutation.mutate(charge.id)">Pagar</button>
         </article>
       </div>
+    </StatePanel>
+  </section>
+
+  <section class="section-block">
+    <div class="section-title"><div><h2>Minhas multas</h2><p>GET /api/me/fines</p></div></div>
+    <StatePanel :loading="fines.isLoading.value" :error="fines.error.value ? getApiError(fines.error.value) : null" :empty="!fines.data.value?.length">
+      <div class="list"><article v-for="fine in fines.data.value?.slice(0, 5)" :key="fine.id" class="list-row"><div class="grow"><strong>Multa #{{ fine.id }}</strong><span>Permanência #{{ fine.stay_id }} · {{ money(fine.amount) }}</span></div><StatusBadge :status="fine.status" /></article></div>
     </StatePanel>
   </section>
 </template>

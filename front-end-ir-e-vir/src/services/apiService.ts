@@ -1,5 +1,5 @@
 import { http } from '@/api/http'
-import type { AuthResponse, Charge, EntryPayload, ExitPayload, Id, LinkVehiclePayload, PaymentResult, Stay, User, Vehicle, Zone } from '@/types/api'
+import type { AuthResponse, Charge, EntryPayload, ExitPayload, Fine, Id, LinkVehiclePayload, PaymentResult, Stay, User, Vehicle, Zone } from '@/types/api'
 
 const unwrap = <T>(value: T | { data: T }): T => typeof value === 'object' && value !== null && 'data' in value ? value.data : value
 
@@ -11,6 +11,7 @@ export const apiService = {
   getMyVehicles: async () => unwrap((await http.get<Vehicle[] | { data: Vehicle[] }>('/me/vehicles')).data),
   getMyStays: async () => unwrap((await http.get<Stay[] | { data: Stay[] }>('/me/stays')).data),
   getMyCharges: async () => unwrap((await http.get<Charge[] | { data: Charge[] }>('/me/charges')).data),
+  getMyFines: async () => unwrap((await http.get<Fine[] | { data: Fine[] }>('/me/fines')).data),
   linkMyVehicle: async (payload: LinkVehiclePayload) => unwrap((await http.post<Vehicle | { data: Vehicle }>('/me/vehicles', payload)).data),
   payMyCharge: async (chargeId: Id) => (await http.post<PaymentResult>(`/me/charges/${chargeId}/pay`)).data,
 
@@ -21,6 +22,7 @@ export const apiService = {
   createEntry: async (payload: EntryPayload) => (await http.post<Stay>('/admin/stays/entry', payload)).data,
   createExit: async (payload: ExitPayload) => (await http.post('/admin/stays/exit', payload)).data,
   getCharges: async () => unwrap((await http.get<Charge[] | { data: Charge[] }>('/admin/charges')).data),
+  getFines: async () => unwrap((await http.get<Fine[] | { data: Fine[] }>('/admin/fines')).data),
   getChargeByPlate: async (plate: string) => unwrap((await http.get<Charge | { data: Charge }>(`/admin/charges/${encodeURIComponent(plate)}`)).data),
   createCharge: async (stayId: Id) => unwrap((await http.post<Charge | { data: Charge }>(`/admin/charges/${stayId}`)).data),
   payCharge: async (chargeId: Id, userId: Id) => (await http.post<PaymentResult>(`/admin/charges/${chargeId}/pay/${userId}`)).data,

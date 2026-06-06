@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\StayController;
 use App\Http\Controllers\Api\V1\ChargeController;
+use App\Http\Controllers\Api\V1\FineController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VehicleController;
@@ -19,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/me/vehicles', [MeController::class, 'linkVehicle']);
     Route::get('/me/stays', [MeController::class, 'stays']);
     Route::get('/me/charges', [MeController::class, 'charges']);
+    Route::get('/me/fines', [FineController::class, 'mine']);
     Route::post('/me/charges/{charge}/pay', [MeController::class, 'payCharge']);
 
     Route::middleware('role:admin')->prefix('/admin')->group(function () {
@@ -34,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/charges/{plate}', [ChargeController::class, 'showByPlate']);
         Route::post('/charges/{stay}', [ChargeController::class, 'store']);
         Route::post('/charges/{charge}/pay/{user}', [ChargeController::class, 'pay']);
+        Route::get('/fines', [FineController::class, 'index']);
 
         Route::post('/user/{user}/vehicles', [UserController::class, 'linkToVehicle']);
         Route::get('/user/{user}/stays', [UserController::class, 'showUserStays']);

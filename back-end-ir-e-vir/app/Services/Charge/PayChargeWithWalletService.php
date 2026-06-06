@@ -8,6 +8,7 @@ use App\Models\Wallet;
 use App\Models\Payment;
 use App\Services\Wallet\ValidateBalanceService;
 use App\Services\Wallet\DeductBalanceService;
+use Illuminate\Support\Facades\DB;
 
 class PayChargeWithWalletService
 {
@@ -18,28 +19,49 @@ class PayChargeWithWalletService
 
     public function execute(Charge $charge, Wallet $wallet): Payment
     {
-        $hasBalance = $this->validateBalanceService->execute(
-            $wallet,
-            $charge->value
-        );
+        return DB::transaction(function () use ($charge, $wallet) {
+            $lockedCharge = Charge::whereKey($charge->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        if (!$hasBalance) {
-            throw new Exception(
-                'Saldo insuficiente na carteira para pagar esta cobrança.'
+            if ($lockedCharge->status === Charge::STATUS_PAID) {
+                $payment = $lockedCharge->payments()
+                    ->where('status', Payment::STATUS_COMPLETED)
+                    ->latest()
+                    ->first();
+
+                if ($payment) {
+                    return $payment;
+                }
+
+                throw new Exception('Cobrança já está paga.');
+            }
+
+            $lockedWallet = Wallet::whereKey($wallet->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $hasBalance = $this->validateBalanceService->execute(
+                $lockedWallet,
+                $lockedCharge->value
             );
-        }
 
-        $this->deductBalanceService->execute($wallet, $charge->value);
+            if (!$hasBalance) {
+                throw new Exception(
+                    'Saldo insuficiente na carteira para pagar esta cobrança.'
+                );
+            }
 
-        $charge->update(['status' => Charge::STATUS_PAID]);
+            $this->deductBalanceService->execute($lockedWallet, $lockedCharge->value);
 
-        $payment = Payment::create([
-            'paid_value' => $charge->value,
-            'payment_date' => now(),
-            'status' => Payment::STATUS_COMPLETED,
-            'charges_id' => $charge->id,
-        ]);
+            $lockedCharge->update(['status' => Charge::STATUS_PAID]);
 
-        return $payment;
+            return Payment::create([
+                'paid_value' => $lockedCharge->value,
+                'payment_date' => now(),
+                'status' => Payment::STATUS_COMPLETED,
+                'charges_id' => $lockedCharge->id,
+            ]);
+        });
     }
 }

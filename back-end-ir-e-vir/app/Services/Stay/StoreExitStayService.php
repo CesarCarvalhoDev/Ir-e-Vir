@@ -5,100 +5,138 @@ namespace App\Services\Stay;
 use Exception;
 
 use App\Models\Stay;
-use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\Fine;
 use Carbon\Carbon;
 
 use App\Services\Charge\GenerateChargeService;
 use App\Services\Charge\PayChargeWithWalletService;
 use App\Services\Fine\GenerateFineService;
+use App\Services\Tariff\CalculateTariffValue;
+use Illuminate\Support\Facades\DB;
 
 class StoreExitStayService
 {
     public function __construct(
-        private CalculateStayAmountService $calculateStayAmountService,
-
+        private CalculateTariffValue $calculateTariffValue,
         private GenerateChargeService $generateChargeService,
-
         private PayChargeWithWalletService $payChargeWithWalletService,
-
         private GenerateFineService $generateFineService
     ) {}
 
     public function execute(array $data)
     {
-        $vehicle = Vehicle::where('plate', $data['plate'])->firstOrFail();
+        $result = DB::transaction(function () use ($data) {
+            
+            $vehicle = Vehicle::where('plate', $data['plate'])
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        $user = $vehicle->users()->first();
+            $user = $vehicle->users()->first();
 
-        if (!$user) {
-            throw new Exception(
-                'Veículo não está vinculado a nenhum usuário.'
-            );
-        }
+            if (!$user) {
+                throw new Exception('Veículo não está vinculado a nenhum usuário.');
+            }
 
-        $wallet = $user->wallet;
+            $wallet = $user->wallet;
 
-        if (!$wallet) {
-            throw new Exception(
-                'Usuário não possui carteira.'
-            );
-        }
+            if (!$wallet) {
+                throw new Exception('Usuário não possui carteira.');
+            }
 
-        $stay = Stay::where('vehicle_id', $vehicle->id)
-            ->where('status', Stay::STATUS_ACTIVE)
-            ->first();
+            $stay = Stay::with('zone')
+                ->where('vehicle_id', $vehicle->id)
+                ->where('status', Stay::STATUS_ACTIVE)
+                ->lockForUpdate()
+                ->first();
 
-        if (!$stay) {
-            throw new Exception(
-                'Nenhuma permanência ativa encontrada.'
-            );
-        }
+            if (!$stay) {
+                throw new Exception('Nenhuma permanência ativa encontrada.');
+            }
 
-        $amount = $this
-            ->calculateStayAmountService
-            ->execute($stay);
+            $exit = Carbon::parse($data['exit']);
 
-        $charge = $this->generateChargeService->execute(
-            $stay,
-            $amount
-        );
+            if ($exit->lt($stay->entry)) {
+                throw new Exception('A saída não pode ser anterior à entrada.');
+            }
 
-        try {
-            $payment = $this->payChargeWithWalletService->execute(
-                $charge,
-                $wallet
-            );
+            $stay->exit = $exit;
+            $stay->total_time = $stay->entry->diffInMinutes($exit);
 
-            $stay->update([
-                'status' => Stay::STATUS_FINISHED,
-                'exit' => $data['exit'],
-                'total_time' => $stay->entry->diffInMinutes(Carbon::parse($data['exit'])),
-            ]);
+            $amount = $this->calculateTariffValue->execute($stay);
 
-            return [
-                'message' => 'Saída registrada com sucesso.',
-                'amount_paid' => $amount,
-                'charge_id' => $charge->id,
-                'payment_id' => $payment->id,
-                'remaining_balance' => $wallet->fresh()->balance,
-            ];
-        } catch (Exception $ex) {
-            $this->generateFineService->execute(
-                $user,
+            $charge = $this->generateChargeService->execute(
                 $stay,
-                $amount
+                $amount,
+                $user
             );
 
-            $stay->update([
-                'status' => Stay::STATUS_IRREGULAR,
-                'exit' => $data['exit'],
-                'total_time' => $stay->entry->diffInMinutes(Carbon::parse($data['exit'])),
-            ]);
+            $timeLimitFine = null;
 
-            throw new Exception(
-                'Saldo insuficiente. Multa gerada.'
-            );
+            if ($stay->zone && $stay->total_time > $stay->zone->maximum_time) {
+                $timeLimitFine = $this->generateFineService->execute(
+                    $user,
+                    $stay,
+                    $amount,
+                    Fine::REASON_TIME_LIMIT_EXCEEDED
+                );
+            }
+
+            try {
+                $payment = $this->payChargeWithWalletService->execute(
+                    $charge,
+                    $wallet
+                );
+
+                $stay->update([
+                    'status' => Stay::STATUS_FINISHED,
+                    'exit' => $exit,
+                    'total_time' => $stay->total_time,
+                ]);
+
+                return [
+                    'success' => true,
+                    'message' => 'Saída registrada com sucesso.',
+                    'amount_paid' => $amount,
+                    'charge_id' => $charge->id,
+                    'payment_id' => $payment->id,
+                    'time_limit_fine_id' => $timeLimitFine?->id,
+                    'remaining_balance' => $wallet->fresh()->balance,
+                ];
+            } catch (Exception $ex) {
+                if (!str_contains($ex->getMessage(), 'Saldo insuficiente')) {
+                    throw $ex;
+                }
+
+                $balanceFine = $this->generateFineService->execute(
+                    $user,
+                    $stay,
+                    $amount,
+                    Fine::REASON_INSUFFICIENT_BALANCE
+                );
+
+                $stay->update([
+                    'status' => Stay::STATUS_IRREGULAR,
+                    'exit' => $exit,
+                    'total_time' => $stay->total_time,
+                ]);
+
+                return [
+                    'success' => false,
+                    'message' => 'Saldo insuficiente. Multa gerada.',
+                    'charge_id' => $charge->id,
+                    'balance_fine_id' => $balanceFine->id,
+                    'time_limit_fine_id' => $timeLimitFine?->id,
+                ];
+            }
+        });
+
+        if (!$result['success']) {
+            throw new Exception($result['message']);
         }
+
+        unset($result['success']);
+
+        return $result;
     }
 }

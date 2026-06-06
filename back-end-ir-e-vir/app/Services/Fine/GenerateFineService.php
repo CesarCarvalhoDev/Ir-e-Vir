@@ -11,10 +11,12 @@ class GenerateFineService
     public function execute(
         User $user,
         Stay $stay,
-        float $amount
+        float $amount,
+        string $reason
     ): Fine {
 
         $existingFine = Fine::where('stay_id', $stay->id)
+            ->where('reason', $reason)
             ->where('status', Fine::STATUS_ACTIVE)
             ->first();
 
@@ -28,7 +30,7 @@ class GenerateFineService
 
             'amount' => $amount,
 
-            'reason' => Fine::REASON_INSUFFICIENT_BALANCE,
+            'reason' => $reason,
 
             'status' => Fine::STATUS_ACTIVE,
 

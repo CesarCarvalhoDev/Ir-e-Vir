@@ -20,6 +20,7 @@ class PaymentResource extends JsonResource
             'payment_date' => $this->payment_date,
             'status' => $this->status,
             'charges_id' => $this->charges_id,
+            'charge_id' => $this->charges_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

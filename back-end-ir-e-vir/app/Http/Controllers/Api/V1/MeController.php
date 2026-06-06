@@ -33,9 +33,12 @@ class MeController extends Controller
 
     public function charges(Request $request)
     {
-        $charges = Charge::with('stay.vehicle')
-            ->whereHas('stay.vehicle.users', function ($query) use ($request) {
-                $query->where('users.id', $request->user()->id);
+        $charges = Charge::with(['stay.vehicle', 'payments', 'user'])
+            ->where(function ($query) use ($request) {
+                $query->where('user_id', $request->user()->id)
+                    ->orWhereHas('stay.vehicle.users', function ($subQuery) use ($request) {
+                        $subQuery->where('users.id', $request->user()->id);
+                    });
             })
             ->get();
 
@@ -91,7 +94,7 @@ class MeController extends Controller
 
             return response()->json([
                 'message' => 'Cobrança paga com sucesso.',
-                'charge' => new ChargeResource($charge->fresh()),
+                'charge' => new ChargeResource($charge->fresh()->load(['stay.vehicle', 'payments', 'user'])),
                 'payment' => [
                     'id' => $payment->id,
                     'paid_value' => $payment->paid_value,

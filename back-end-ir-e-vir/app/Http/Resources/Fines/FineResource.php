@@ -1,39 +1,28 @@
 <?php
 
-namespace App\Http\Resources\Charges;
+namespace App\Http\Resources\Fines;
 
 use App\Http\Resources\Stays\StayResource;
 use App\Http\Resources\Vehicles\VehicleResorce;
-use App\Http\Resources\Payments\PaymentResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ChargeResource extends JsonResource
+class FineResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
-            'value' => (float) $this->value,
-            'status' => $this->status,
-            'due_date' => $this->due_date,
-
-            'stay_id' => $this->stay_id,
             'user_id' => $this->user_id,
-
+            'stay_id' => $this->stay_id,
+            'amount' => (float) $this->amount,
+            'reason' => $this->reason,
+            'status' => $this->status,
+            'started_at' => $this->started_at,
+            'resolved_at' => $this->resolved_at,
+            'paid_at' => $this->paid_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
-            'payment' => $this->when(
-                $this->relationLoaded('payments') && $this->payments->isNotEmpty(),
-                fn () => new PaymentResource($this->payments->first())
-            ),
-            'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             'user' => $this->when($this->relationLoaded('user'), fn () => [
                 'id' => $this->user?->id,
                 'name' => $this->user?->name,
@@ -44,7 +33,6 @@ class ChargeResource extends JsonResource
                 $this->relationLoaded('stay'),
                 fn () => new StayResource($this->stay)
             ),
-
             'vehicle' => $this->when(
                 $this->relationLoaded('stay') && $this->stay?->relationLoaded('vehicle'),
                 fn () => new VehicleResorce($this->stay->vehicle)

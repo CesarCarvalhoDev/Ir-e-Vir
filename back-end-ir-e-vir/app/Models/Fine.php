@@ -32,7 +32,8 @@ class Fine extends Model
     public const STATUS_CANCELED = 'canceled';
 
 
-    public const REASON_INSUFFICIENT_BALANCE = 'INSUFFICIENT_BALANCE';
+    public const REASON_INSUFFICIENT_BALANCE = 'insufficient_balance';
+    public const REASON_TIME_LIMIT_EXCEEDED = 'time_limit_exceeded';
 
     public function user(): BelongsTo
     {

@@ -10,6 +10,8 @@ class Zone extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
+        'maximum_time',
     ];
 
     protected $hidden = [
@@ -20,5 +22,15 @@ class Zone extends Model
         return [
 
         ];
+    }
+
+    public function tariffs()
+    {
+        return $this->hasMany(Tariff::class);
+    }
+
+    public function stays()
+    {
+        return $this->hasMany(Stay::class);
     }
 }

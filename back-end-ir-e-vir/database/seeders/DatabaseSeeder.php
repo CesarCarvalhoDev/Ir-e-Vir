@@ -59,16 +59,5 @@ class DatabaseSeeder extends Seeder
         $user->vehicles()->syncWithoutDetaching(
             $vehicles->take(2)->pluck('id')->all()
         );
-
-        $vehicles->each(function ($vehicle) {
-
-            Stay::factory()
-                ->count(rand(1, 3))
-                ->create([
-                    'vehicle_id' => $vehicle->id,
-                    'zone_id' => Zone::inRandomOrder()->first()->id,
-                    'entry' => now(),
-                ]);
-        });
     }
 }

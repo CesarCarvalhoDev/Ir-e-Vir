@@ -8,7 +8,7 @@ class GetAllChargesService
 {
     public function execute()
     {
-        $charges = Charge::all();
+        $charges = Charge::with(['stay.vehicle', 'payments', 'user'])->get();
         return $charges;
     }
 }

@@ -16,7 +16,7 @@ const entry = reactive({ entry: localDateTimeValue(), plate: '', zone_id: 0 })
 const exit = reactive({ exit: localDateTimeValue(), plate: '' })
 const refresh = () => client.invalidateQueries({ queryKey: ['stays'] })
 const entryMutation = useMutation({ mutationFn: apiService.createEntry, onSuccess: () => { ui.notify('success', 'Entrada registrada.'); refresh() }, onError: e => ui.notify('error', getApiError(e)) })
-const exitMutation = useMutation({ mutationFn: apiService.createExit, onSuccess: () => { ui.notify('success', 'Saída processada.'); refresh(); client.invalidateQueries({ queryKey: ['charges'] }) }, onError: e => ui.notify('error', getApiError(e)) })
+const exitMutation = useMutation({ mutationFn: apiService.createExit, onSuccess: () => { ui.notify('success', 'Saída processada.'); refresh(); client.invalidateQueries({ queryKey: ['charges'] }); client.invalidateQueries({ queryKey: ['fines'] }) }, onError: e => { ui.notify('error', getApiError(e)); refresh(); client.invalidateQueries({ queryKey: ['charges'] }); client.invalidateQueries({ queryKey: ['fines'] }) } })
 </script>
 <template>
   <section class="page-head"><div><p class="eyebrow">Controle de estacionamento</p><h1>Permanências</h1><p>Registre entradas e saídas com os campos exigidos pelo back-end.</p></div></section>

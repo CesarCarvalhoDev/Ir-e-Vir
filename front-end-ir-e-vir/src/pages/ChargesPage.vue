@@ -28,7 +28,7 @@ const payMutation = useMutation({ mutationFn: () => apiService.payCharge(payment
   </section>
   <section class="section-block"><div class="section-title"><div><h2>Extrato de cobranças</h2><p>GET /api/admin/charges</p></div></div>
     <StatePanel :loading="charges.isLoading.value" :error="charges.error.value ? getApiError(charges.error.value) : null" :empty="!charges.data.value?.length">
-      <div class="charge-grid"><article v-for="charge in charges.data.value" :key="charge.id" class="charge-card"><div><small>Cobrança #{{ charge.id }}</small><StatusBadge :status="charge.status" /></div><strong>{{ money(charge.value) }}</strong><p>Permanência #{{ charge.stay_id }}</p><span>Vence em {{ dateTime(charge.due_date) }}</span></article></div>
+      <div class="charge-grid"><article v-for="charge in charges.data.value" :key="charge.id" class="charge-card"><div><small>Cobrança #{{ charge.id }}</small><StatusBadge :status="charge.status" /></div><strong>{{ money(charge.value) }}</strong><p>Permanência #{{ charge.stay_id }}</p><span>Vence em {{ dateTime(charge.due_date) }}</span><span v-if="charge.payment">Pago em {{ dateTime(charge.payment.payment_date) }} · {{ money(charge.payment.paid_value) }}</span></article></div>
     </StatePanel>
   </section>
 </template>

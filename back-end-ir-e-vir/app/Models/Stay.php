@@ -39,9 +39,19 @@ class Stay extends Model
         return $this->hasMany(Charge::class);
     }
 
+    public function fines()
+    {
+        return $this->hasMany(Fine::class);
+    }
+
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class);
     }
     
 }
