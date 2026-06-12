@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\StayController;
+use App\Http\Controllers\Api\V1\TariffController;
 use App\Http\Controllers\Api\V1\ChargeController;
 use App\Http\Controllers\Api\V1\FineController;
 use App\Http\Controllers\Api\V1\MeController;
@@ -26,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:admin')->prefix('/admin')->group(function () {
         Route::get('/users', [UserController::class, 'index']);
         Route::apiResource('/zones', ZoneController::class);
+        Route::apiResource('/tariffs', TariffController::class)->only(['index', 'store']);
         Route::get('/vehicles', [VehicleController::class, 'index']);
 
         Route::get('/stays', [StayController::class, 'index']);

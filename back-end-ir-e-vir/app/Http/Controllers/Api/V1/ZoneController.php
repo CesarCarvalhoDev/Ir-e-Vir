@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Zone\CreateZoneRequest;
 use Illuminate\Http\Request;
 use App\Models\Zone;
+use App\Services\Zone\CreateZoneService;
 use App\Services\Zone\GetAllZonesService;
 
 class ZoneController extends Controller
@@ -21,9 +23,10 @@ class ZoneController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateZoneRequest $request, CreateZoneService $createZoneService)
     {
-        //
+        $zone = $createZoneService->execute($request->validated());
+        return response()->json($zone, 201);
     }
 
     /**

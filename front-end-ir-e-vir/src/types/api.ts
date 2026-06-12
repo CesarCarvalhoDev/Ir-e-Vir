@@ -3,6 +3,9 @@ export type UserRole = 'user' | 'admin'
 export interface Wallet { id: Id; balance: number; status: string }
 export interface User { id: Id; name: string; email: string; role: UserRole; available_balance: number; wallet?: Wallet | null; vehicles?: Vehicle[]; created_at: string; updated_at: string }
 export interface Zone { id: Id; name: string; maximum_time: number; created_at: string; updated_at: string }
+export interface CreateZonePayload { name: string; maximum_time: number }
+export interface Tariff { id: Id; hourly_rate: number; start_date: string; end_date: string; active: boolean; zone_id: Id; zone?: Pick<Zone, 'id' | 'name' | 'maximum_time'>; created_at: string; updated_at: string }
+export interface CreateTariffPayload { hourly_rate: number; start_date: string; end_date: string; active: boolean; zone_id: Id }
 export interface Vehicle { id: Id; plate: string; type: string | null; has_registration: boolean; available_balance?: number; created_at: string; updated_at: string }
 export interface Stay { id: Id; entry: string; exit: string | null; total_time: number | null; status: string; vehicle_id: Id; zone_id: Id; created_at: string; updated_at: string }
 export interface Payment { id: Id; paid_value: number | string; payment_date: string; status: string; charges_id?: Id; charge_id?: Id; created_at?: string; updated_at?: string }

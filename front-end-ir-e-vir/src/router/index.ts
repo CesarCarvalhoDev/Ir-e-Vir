@@ -12,6 +12,9 @@ import ChargesPage from '@/pages/ChargesPage.vue'
 import UsersPage from '@/pages/UsersPage.vue'
 import AdminVehiclesPage from '@/pages/AdminVehiclesPage.vue'
 import AdminZonesPage from '@/pages/AdminZonesPage.vue'
+import AdminCreateZonePage from '@/pages/AdminCreateZonePage.vue'
+import AdminTariffsPage from '@/pages/AdminTariffsPage.vue'
+import AdminCreateTariffPage from '@/pages/AdminCreateTariffPage.vue'
 import AdminFinesPage from '@/pages/AdminFinesPage.vue'
 import ApiNotesPage from '@/pages/ApiNotesPage.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -43,6 +46,9 @@ const router = createRouter({
         { path: 'permanencias', component: StaysPage },
         { path: 'veiculos', component: AdminVehiclesPage },
         { path: 'zonas', component: AdminZonesPage },
+        { path: 'zonas/nova', component: AdminCreateZonePage },
+        { path: 'tarifas', component: AdminTariffsPage },
+        { path: 'tarifas/nova', component: AdminCreateTariffPage },
         { path: 'cobrancas', component: ChargesPage },
         { path: 'multas', component: AdminFinesPage },
         { path: 'usuarios', component: UsersPage },

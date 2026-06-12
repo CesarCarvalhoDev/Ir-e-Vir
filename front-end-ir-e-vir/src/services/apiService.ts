@@ -1,5 +1,5 @@
 import { http } from '@/api/http'
-import type { AuthResponse, Charge, EntryPayload, ExitPayload, Fine, Id, LinkVehiclePayload, PaymentResult, Stay, User, Vehicle, Zone } from '@/types/api'
+import type { AuthResponse, Charge, CreateTariffPayload, CreateZonePayload, EntryPayload, ExitPayload, Fine, Id, LinkVehiclePayload, PaymentResult, Stay, Tariff, User, Vehicle, Zone } from '@/types/api'
 
 const unwrap = <T>(value: T | { data: T }): T => typeof value === 'object' && value !== null && 'data' in value ? value.data : value
 
@@ -17,6 +17,9 @@ export const apiService = {
 
   getUsers: async () => unwrap((await http.get<User[] | { data: User[] }>('/admin/users')).data),
   getZones: async () => (await http.get<Zone[]>('/admin/zones')).data,
+  createZone: async (payload: CreateZonePayload) => (await http.post<Zone>('/admin/zones', payload)).data,
+  getTariffs: async () => unwrap((await http.get<Tariff[] | { data: Tariff[] }>('/admin/tariffs')).data),
+  createTariff: async (payload: CreateTariffPayload) => unwrap((await http.post<Tariff | { data: Tariff }>('/admin/tariffs', payload)).data),
   getVehicles: async () => (await http.get<Vehicle[]>('/admin/vehicles')).data,
   getStays: async () => (await http.get<Stay[]>('/admin/stays')).data,
   createEntry: async (payload: EntryPayload) => (await http.post<Stay>('/admin/stays/entry', payload)).data,

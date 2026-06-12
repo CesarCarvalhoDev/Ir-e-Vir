@@ -18,9 +18,10 @@ class Tariff extends Model
         'zone_id',
     ];
 
-    public function casts()
+    protected function casts(): array
     {
         return [
+            'hourly_rate' => 'decimal:2',
             'active' => 'boolean',
             'start_date' => 'datetime',
             'end_date' => 'datetime',

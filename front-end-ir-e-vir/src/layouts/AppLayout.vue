@@ -13,9 +13,10 @@ const links = computed(() => auth.isAdmin ? [
   { to: '/admin/permanencias', label: 'Permanências', icon: Route },
   { to: '/admin/veiculos', label: 'Veículos', icon: CarFront },
   { to: '/admin/zonas', label: 'Zonas', icon: MapPin },
+  { to: '/admin/tarifas', label: 'Tarifas', icon: CircleDollarSign },
   { to: '/admin/cobrancas', label: 'Cobranças', icon: CircleDollarSign },
   { to: '/admin/multas', label: 'Multas', icon: AlertTriangle },
-  { to: '/admin/usuarios', label: 'Usuários e veículos', icon: CarFront },
+  { to: '/admin/usuarios', label: 'Usuários', icon: UserCircle },
   { to: '/admin/limites-da-api', label: 'Limites da API', icon: FileWarning },
 ] : [
   { to: '/user', label: 'Minha home', icon: House },
